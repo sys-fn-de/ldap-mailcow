@@ -2,10 +2,6 @@
 
 Adds LDAP accounts to mailcow-dockerized and enables LDAP (e.g., linuxmuster) authentication.
 
-## Security risk
-
-In order to work in a linuxmuster environment, this repo contains changes to allow self signed certificates, which is a security risk.
-
 
 * [How does it work](#how-does-it-work)
 * [Usage](#usage)
@@ -14,6 +10,11 @@ In order to work in a linuxmuster environment, this repo contains changes to all
   * [WebUI and EAS authentication](#webui-and-eas-authentication)
   * [Two-way sync](#two-way-sync)
 * [Customizations and Integration support](#customizations-and-integration-support)
+
+
+## Security risk
+
+In order to work in a linuxmuster environment, this repo contains changes to allow self signed certificates, which is a security risk.
 
 ## How does it work
 
@@ -52,6 +53,7 @@ A python script periodically checks and creates new LDAP accounts and deactivate
 
     * `LDAP-MAILCOW_LDAP_URI` - LDAP (e.g., Active Directory) URI (must be reachable from within the container). The URIs are in syntax `protocol://host:port`. For example `ldap://localhost` or `ldaps://secure.domain.org`
     * `LDAP-MAILCOW_LDAP_BASE_DN` - base DN where user accounts can be found
+    * `LDAP-MAILCOW_LDAP_BASE_DOMAIN` - base Domain (most likely a combination of BASE_DN (e.g. DC=example, DC=local -> example.local)
     * `LDAP-MAILCOW_LDAP_BIND_DN` - bind DN of a special LDAP account that will be used to browse for users
     * `LDAP-MAILCOW_LDAP_BIND_DN_PASSWORD` - password for bind DN account
     * `LDAP-MAILCOW_API_HOST` - mailcow API url. Make sure it's enabled and accessible from within the container for both reads and writes
@@ -72,7 +74,7 @@ Container internally uses the following configuration templates:
 * SOGo: `/templates/sogo/plist_ldap`
 * dovecot: `/templates/dovecot/ldap/passdb.conf`
 
-These files have been tested against Active Directory running on Windows Server 2019 domain controller. If necessary, you can edit and remount them through docker volumes. Some documentation on these files can be found here: [dovecot](https://doc.dovecot.org/configuration_manual/authentication/ldap/), [SOGo](https://sogo.nu/files/docs/SOGoInstallationGuide.html#_authentication_using_ldap)
+These files have been tested against linuxmuster. If necessary, you can edit and remount them through docker volumes. Some documentation on these files can be found here: [dovecot](https://doc.dovecot.org/configuration_manual/authentication/ldap/), [SOGo](https://sogo.nu/files/docs/SOGoInstallationGuide.html#_authentication_using_ldap)
 
 ## Limitations
 
@@ -100,6 +102,3 @@ Users from your LDAP directory will be added (and deactivated if disabled/not fo
 
 External authentication (identity federation) is an enterprise feature [for mailcow](https://github.com/mailcow/mailcow-dockerized/issues/2316#issuecomment-491212921). That’s why I developed an external solution, and it is unlikely that it’ll be ever directly integrated into mailcow.
 
-I’ve created this tool because I needed it for my regular work. You are free to use it for commercial needs. Please understand that I can work on issues only if they fall within the scope of my current work interests or if I’ll have some available free time (never happened for many years). I’ll do my best to review submitted PRs ASAP, though.
-
-**You can always [contact me](mailto:programmierus@gmail.com) to help you with the integration or for custom modifications on a paid basis. My current hourly rate (ActivityWatch tracked) is 100,-€ with 3h minimum commitment.**
