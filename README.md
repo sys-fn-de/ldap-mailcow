@@ -1,6 +1,6 @@
 # ldap-mailcow
 
-Adds LDAP accounts to mailcow-dockerized and enables LDAP (e.g., Active Directory) authentication.
+Adds LDAP accounts to mailcow-dockerized and enables LDAP (e.g., linuxmuster) authentication.
 
 * [How does it work](#how-does-it-work)
 * [Usage](#usage)
@@ -33,13 +33,14 @@ A python script periodically checks and creates new LDAP accounts and deactivate
         environment:
             - LDAP-MAILCOW_LDAP_URI=ldap(s)://dc.example.local
             - LDAP-MAILCOW_LDAP_BASE_DN=OU=Mail Users,DC=example,DC=local
+            - LDAP-MAILCOW_LDAP_BASE_DOMAIN=example.local
             - LDAP-MAILCOW_LDAP_BIND_DN=CN=Bind DN,CN=Users,DC=example,DC=local
             - LDAP-MAILCOW_LDAP_BIND_DN_PASSWORD=BindPassword
             - LDAP-MAILCOW_API_HOST=https://mailcow.example.local
             - LDAP-MAILCOW_API_KEY=XXXXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX
             - LDAP-MAILCOW_SYNC_INTERVAL=300
-            - LDAP-MAILCOW_LDAP_FILTER=(&(objectClass=user)(objectCategory=person)(memberOf:1.2.840.113556.1.4.1941:=CN=Group,CN=Users,DC=example DC=local))
-            - LDAP-MAILCOW_SOGO_LDAP_FILTER=objectClass='user' AND objectCategory='person' AND memberOf:1.2.840.113556.1.4.1941:='CN=Group,CN=Users,DC=example DC=local'
+            - LDAP-MAILCOW_LDAP_FILTER=(sophomorixStatus=U)
+            - LDAP-MAILCOW_SOGO_LDAP_FILTER=sophomorixStatus='U'
     ```
 
 3. Configure environmental variables:

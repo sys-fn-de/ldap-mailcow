@@ -34,16 +34,17 @@ def main():
         time.sleep(interval)
 
 def sync():
+    ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
     ldap_connector = ldap.initialize(f"{config['LDAP_URI']}")
     ldap_connector.set_option(ldap.OPT_REFERRALS, 0)
     ldap_connector.simple_bind_s(config['LDAP_BIND_DN'], config['LDAP_BIND_DN_PASSWORD'])
 
     ldap_results = ldap_connector.search_s(config['LDAP_BASE_DN'], ldap.SCOPE_SUBTREE, 
                 config['LDAP_FILTER'], 
-                ['userPrincipalName', 'cn', 'userAccountControl'])
+                ['mail', 'cn', 'userAccountControl'])
 
     ldap_results = map(lambda x: (
-        x[1]['userPrincipalName'][0].decode(),
+        x[1]['mail'][0].decode(),
         x[1]['cn'][0].decode(),
         False if int(x[1]['userAccountControl'][0].decode()) & 0b10 else True), ldap_results)
 
@@ -52,6 +53,8 @@ def sync():
     for (email, ldap_name, ldap_active) in ldap_results:
         (db_user_exists, db_user_active) = filedb.check_user(email)
         (api_user_exists, api_user_active, api_name) = api.check_user(email)
+
+        logging.info(f"email: {email}, ldap_name: {ldap_name}")   
 
         unchanged = True
 
@@ -124,6 +127,7 @@ def read_config():
     required_config_keys = [
         'LDAP-MAILCOW_LDAP_URI', 
         'LDAP-MAILCOW_LDAP_BASE_DN',
+        'LDAP-MAILCOW_LDAP_BASE_DOMAIN',
         'LDAP-MAILCOW_LDAP_BIND_DN', 
         'LDAP-MAILCOW_LDAP_BIND_DN_PASSWORD',
         'LDAP-MAILCOW_API_HOST', 
@@ -156,7 +160,8 @@ def read_dovecot_passdb_conf_template():
 
     return data.substitute(
         ldap_uri=config['LDAP_URI'], 
-        ldap_base_dn=config['LDAP_BASE_DN']
+        ldap_base_dn=config['LDAP_BASE_DN'],
+        ldap_base_domain=config['LDAP_BASE_DOMAIN']
         )
 
 def read_sogo_plist_ldap_template():

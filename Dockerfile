@@ -1,6 +1,9 @@
 FROM python:3-alpine
 
 RUN apk --no-cache add build-base openldap-dev python2-dev python3-dev
+
+RUN echo 'INPUT ( libldap.so )' > /usr/lib/libldap_r.so
+RUN pip3 install --upgrade pip
 RUN pip3 install python-ldap sqlalchemy requests
 
 COPY templates ./templates
