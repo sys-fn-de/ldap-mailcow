@@ -1,7 +1,10 @@
 # ldap-mailcow-linuxmuster
 
 Adds LDAP accounts to mailcow-dockerized and enables LDAP (e.g., linuxmuster) authentication.
-Attention: this repo contains changes to allow self signed certificates, which is a security risk.
+
+## Security risk
+
+In order to work in a linuxmuster environment, this repo contains changes to allow self signed certificates, which is a security risk.
 
 
 * [How does it work](#how-does-it-work)
@@ -23,7 +26,7 @@ A python script periodically checks and creates new LDAP accounts and deactivate
 
     ```yaml
     ldap-mailcow:
-        image: programmierus/ldap-mailcow
+        image: lexodexo/ldap-mailcow
         network_mode: host
         container_name: mailcowcustomized_ldap-mailcow
         depends_on:
