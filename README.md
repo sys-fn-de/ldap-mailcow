@@ -1,4 +1,4 @@
-# ldap-mailcow
+# ldap-mailcow-linuxmuster
 
 Adds LDAP accounts to mailcow-dockerized and enables LDAP (e.g., linuxmuster) authentication.
 
