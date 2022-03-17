@@ -1,5 +1,8 @@
 import random, string, sys
 import requests
+import time
+
+requests.adapters.DEFAULT_RETRIES = 10
 
 def __post_request(url, json_data):
     api_url = f"{api_host}/{url}"
@@ -53,9 +56,18 @@ def __delete_user(email):
 def check_user(email):
     url = f"{api_host}/api/v1/get/mailbox/{email}"
     headers = {'X-API-Key': api_key, 'Content-type': 'application/json'}
-    req = requests.get(url, headers=headers)
-    rsp = req.json()
-    req.close()
+    time.sleep(1)
+    while True:
+        try:
+            req = requests.get(url, headers=headers)
+            rsp = req.json()
+            req.close()
+        except:
+            print("Request failed, trying again in 5 sec...")
+            time.sleep(5)
+            continue
+        break
+
     
     if not isinstance(rsp, dict):
         sys.exit("API get/mailbox: got response of a wrong type")

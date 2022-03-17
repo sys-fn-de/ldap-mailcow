@@ -1,4 +1,4 @@
-import sys, os, string, time, datetime
+import sys, os, string, time, datetime, traceback
 import ldap
 
 import filedb, api
@@ -28,10 +28,15 @@ def main():
     api.api_key = config['API_KEY']
 
     while (True):
-        sync()
-        interval = int(config['SYNC_INTERVAL'])
-        logging.info(f"Sync finished, sleeping {interval} seconds before next cycle")
-        time.sleep(interval)
+        try:
+            sync()
+            interval = int(config['SYNC_INTERVAL'])
+            logging.info(f"Sync finished, sleeping {interval} seconds before next cycle")
+            time.sleep(interval)
+        except Exception as err:
+            logging.info(f"{traceback.format_exc()}")
+            logging.info(f"Sync failed, starting again in 1 minute: {err}")
+            time.sleep(60)
 
 def sync():
     ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
@@ -48,13 +53,15 @@ def sync():
         x[1]['cn'][0].decode(),
         False if int(x[1]['userAccountControl'][0].decode()) & 0b10 else True), ldap_results)
 
+
     filedb.session_time = datetime.datetime.now()
 
     for (email, ldap_name, ldap_active) in ldap_results:
+
+        logging.info(f"email: {email}, ldap_name: {ldap_name}")
+
         (db_user_exists, db_user_active) = filedb.check_user(email)
         (api_user_exists, api_user_active, api_name) = api.check_user(email)
-
-        logging.info(f"email: {email}, ldap_name: {ldap_name}")   
 
         unchanged = True
 
