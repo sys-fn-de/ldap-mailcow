@@ -20,6 +20,15 @@ In order to work in a linuxmuster environment, this repo contains changes to all
 
 A python script periodically checks and creates new LDAP accounts and deactivates deleted and disabled ones with mailcow API. It also enables LDAP authentication in SOGo and dovecot.
 
+## Build
+    ```
+    git clone https://github.com/sys-fn-de/ldap-mailcow-linuxmuster
+    cd ldap-mailcow-linuxmuster
+    sudo docker login
+    sudo docker build -t <username>/ldap-mailcow .
+    sudo docker push <username>/ldap-mailcow
+    ```
+
 ## Usage
 
 1. Create a `data/ldap` directory. SQLite database for synchronization will be stored there.
