@@ -22,7 +22,7 @@ A python script periodically checks and creates new LDAP accounts and deactivate
 
 ## Build
 
-    ```console
+    ```
     git clone https://github.com/sys-fn-de/ldap-mailcow-linuxmuster
     cd ldap-mailcow-linuxmuster
     sudo docker login
@@ -32,7 +32,7 @@ A python script periodically checks and creates new LDAP accounts and deactivate
 
 ## Logs
 
-    ```console
+    ```
     docker-compose logs -f ldap-mailcow
     ```
 
