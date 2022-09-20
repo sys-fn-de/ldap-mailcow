@@ -76,6 +76,6 @@ def check_user(email):
         return (False, False, None)
 
     if 'active_int' not in rsp and rsp['type'] == 'error':
-        sys.exit(f"API {url}: {rsp['type']} - {rsp['msg']}")
+        sys.exit(f"API {url}: {rsp['type']} - {rsp['msg']} ({rsp})")
     
     return (True, bool(rsp['active_int']), rsp['name'])

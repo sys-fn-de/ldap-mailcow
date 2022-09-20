@@ -35,8 +35,8 @@ def main():
             time.sleep(interval)
         except Exception as err:
             logging.info(f"{traceback.format_exc()}")
-            logging.info(f"Sync failed, starting again in 1 minute: {err}")
-            time.sleep(60)
+            logging.info(f"Sync failed, starting again in 1 hour: {err}")
+            time.sleep(60*60)
 
 def sync():
     ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
